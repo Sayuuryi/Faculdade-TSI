@@ -6,3 +6,4 @@ public class Testando_Classes {
         System.out.println(myObj.valiaa);
     }
 }
+
