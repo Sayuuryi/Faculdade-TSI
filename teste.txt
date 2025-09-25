@@ -1,0 +1,59 @@
+
+Questionário – Comandos básicos
+
+ 
+
+- Questões objetivas
+
+1. Qual é a função do método charAt(0) no código?
+A) Retornar todas as letras da frase
+B) Retornar a primeira letra da frase
+C) Retornar a última letra da frase
+D) Retornar o índice da primeira letra
+
+ 
+
+2. O que faz a linha let palavras = frase.split(" ");?
+A) Separa a frase em palavras usando o espaço como delimitador
+B) Converte a frase em letras individuais
+C) Junta todas as palavras em uma única string
+D) Conta quantas letras a frase possui
+
+ 
+
+3. Qual é a finalidade do loop for que preenche o array tamanhos?
+A) Contar quantas letras "a" existem na frase
+B) Criar um array com o tamanho de cada palavra da frase
+C) Remover espaços da frase
+D) Escolher uma palavra aleatória da frase
+
+ 
+
+4. O que faz Math.floor(Math.random() * palavras.length)?
+A) Retorna o tamanho da frase arredondado para baixo
+B) Retorna sempre a primeira palavra do array
+C) Retorna um índice aleatório de uma palavra do array
+D) Conta quantas palavras têm a letra "a"
+
+ 
+
+5. O que será exibido em resultado.innerHTML?
+A) Apenas a primeira letra da frase
+B) Apenas a palavra aleatória escolhida
+C) Informações sobre a frase, incluindo primeira letra, ocorrências de "a", palavras, tamanhos e palavra aleatória
+D) Nenhuma informação, apenas um alerta
+
+ 
+
+- Questões discursivas:
+
+6. Como o array tamanhos é preenchido e qual é sua utilidade?
+
+
+Resposta: O array tamanhos é preenchido usando um loop for que percorre cada palavra do array palavras. Para cada palavra, o comprimento da palavra (palavras[i].length) é adicionado ao array usando Array.push. Isso permite saber quantas letras cada palavra possui.
+
+
+7. Explique o que faz a expressão ${palavras.join(", ")} no código. Qual é a utilidade desse comando e como ele transforma o array palavras para exibição no HTML?
+
+
+Resposta: A expressão ${palavras.join(", ")} pega todos os elementos do array palavras e os transforma em uma única string, separando cada palavra por uma vírgula e um espaço. Isso permite que o array seja exibido de forma legível no HTML, mostrando todas as palavras da frase digitada pelo usuário em sequência. É uma forma prática de apresentar os dados de um array para o usuário de maneira organizada e compreensível.
