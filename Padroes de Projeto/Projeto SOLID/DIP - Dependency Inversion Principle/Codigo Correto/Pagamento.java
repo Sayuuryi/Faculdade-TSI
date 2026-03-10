@@ -1,0 +1,5 @@
+interface Pagamento {
+    
+    void pagar();
+
+}

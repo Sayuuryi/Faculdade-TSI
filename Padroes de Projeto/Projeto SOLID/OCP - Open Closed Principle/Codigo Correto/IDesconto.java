@@ -1,0 +1,4 @@
+interface IDesconto {
+    double calcular();
+
+}
