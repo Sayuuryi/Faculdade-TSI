@@ -11,6 +11,7 @@ public class Calculadora {
             mostrarMenu();
             opcao = scanner.nextInt();
 
+            // Switch com as opções do que o usuário pode escolher.
             switch (opcao) {
                 case 0:
                     System.out.println("Encerrando calculadora...");
@@ -86,22 +87,27 @@ public class Calculadora {
     private static double subtracao(Scanner scanner) {
         System.out.print("Número 1: ");
         double a = scanner.nextDouble();
+
         System.out.print("Número 2: ");
         double b = scanner.nextDouble();
+
         return a - b;
     }
 
     private static double multiplicacao(Scanner scanner) {
         System.out.print("Número 1: ");
         double a = scanner.nextDouble();
+
         System.out.print("Número 2: ");
         double b = scanner.nextDouble();
+
         return a * b;
     }
 
     private static void divisao(Scanner scanner) {
         System.out.print("Número 1: ");
         double a = scanner.nextDouble();
+
         System.out.print("Número 2: ");
         double b = scanner.nextDouble();
 
@@ -124,8 +130,10 @@ public class Calculadora {
     private static double potencia(Scanner scanner) {
         System.out.print("Base: ");
         double base = scanner.nextDouble();
+
         System.out.print("Expoente: ");
         double exp = scanner.nextDouble();
+
         return Math.pow(base, exp);
     }
 
@@ -143,7 +151,11 @@ public class Calculadora {
         System.out.print("Número inteiro: ");
         int n = scanner.nextInt();
         long fat = 1;
-        for (int i = 1; i <= n; i++) fat *= i;
+        for (int i = 1; i <= n; i++) {
+            fat *= i;
+        }
+
         return fat;
+    
     }
 }
