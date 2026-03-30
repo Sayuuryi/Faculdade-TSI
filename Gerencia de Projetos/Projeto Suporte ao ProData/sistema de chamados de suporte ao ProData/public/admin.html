@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="flex h-screen">
+
+<!-- SIDEBAR -->
+<div class="w-64 bg-slate-900 text-slate-300 flex flex-col p-6">
+
+<div class="flex items-center gap-2 mb-10">
+<div class="bg-blue-600 p-2 rounded-lg">💻</div>
+<h2 class="text-lg font-semibold text-white">Suporte ProData</h2>
+</div>
+
+<nav class="flex-1 space-y-2">
+
+<a href="dashboard.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-600 text-white">
+📊 Dashboard
+</a>
+
+<a href="abrir.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+➕ Novo Chamado
+</a>
+
+<a href="admin.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+🛠 Admin
+</a>
+
+<a href="resolvidos.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+✔ Resolvidos
+</a>
+
+</nav>
+
+<button onclick="logout()"
+class="mt-6 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg">
+Sair
+</button>
+
+</div>
+
+<!-- MAIN -->
+<div class="flex-1 p-6">
+
+<h1 class="text-2xl font-bold mb-6">Gerenciamento de Chamados</h1>
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+
+<table class="w-full text-sm">
+
+<thead class="bg-gray-50 text-gray-600">
+<tr>
+<th class="p-3 text-left">Título</th>
+<th>Status</th>
+<th>Prioridade</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="lista"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+checkAdmin();
+
+async function loadAdmin(){
+ const res = await fetch("/chamados");
+ const lista = await res.json();
+
+ let html = "";
+
+ lista.forEach(c=>{
+
+  let statusColor = "bg-gray-200";
+  if(c.status === "Em andamento") statusColor = "bg-yellow-100 text-yellow-800";
+  if(c.status === "Resolvido") statusColor = "bg-green-100 text-green-800";
+
+  let prioridadeColor = "bg-blue-100";
+  if(c.prioridade === "Alta") prioridadeColor = "bg-red-100 text-red-800";
+
+  html += `
+  <tr class="border-b hover:bg-gray-50">
+
+    <td class="p-3 font-medium">${c.titulo}</td>
+
+    <td>
+      <span class="px-2 py-1 rounded ${statusColor}">
+        ${c.status}
+      </span>
+    </td>
+
+    <td>
+      <span class="px-2 py-1 rounded ${prioridadeColor}">
+        ${c.prioridade}
+      </span>
+    </td>
+
+    <td class="space-x-2">
+
+      <button onclick="setStatus(${c.id}, 'Em andamento')"
+      class="px-2 py-1 bg-yellow-500 text-white rounded">
+        Em andamento
+      </button>
+
+      <button onclick="setStatus(${c.id}, 'Resolvido')"
+      class="px-2 py-1 bg-green-500 text-white rounded">
+        Resolver
+      </button>
+
+      <button onclick="deletar(${c.id})"
+      class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+        Excluir
+      </button>
+
+    </td>
+
+  </tr>
+  `;
+ });
+
+ document.getElementById("lista").innerHTML = html;
+}
+
+async function setStatus(id, status){
+
+ await fetch("/status", {
+  method:"POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({id, status})
+ });
+
+ loadAdmin();
+}
+
+loadAdmin();
+
+async function deletar(id){
+
+ if(!confirm("Tem certeza que deseja excluir este chamado?")) return;
+
+ await fetch("/delete", {
+  method:"POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({id})
+ });
+
+ loadAdmin();
+}
+
+</script>
+
+</body>
+</html>

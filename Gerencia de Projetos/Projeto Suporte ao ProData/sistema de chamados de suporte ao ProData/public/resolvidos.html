@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chamados Resolvidos</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="flex h-screen">
+
+<!-- SIDEBAR -->
+<div class="w-64 bg-slate-900 text-slate-300 flex flex-col p-6">
+
+<div class="flex items-center gap-2 mb-10">
+<div class="bg-blue-600 p-2 rounded-lg">💻</div>
+<h2 class="text-lg font-semibold text-white">Suporte ProData</h2>
+</div>
+
+<nav class="flex-1 space-y-2">
+
+<a href="dashboard.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-600 text-white">
+📊 Dashboard
+</a>
+
+<a href="abrir.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+➕ Novo Chamado
+</a>
+
+<a href="admin.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+🛠 Admin
+</a>
+
+<a href="resolvidos.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+✔ Resolvidos
+</a>
+
+</nav>
+
+<button onclick="logout()"
+class="mt-6 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg">
+Sair
+</button>
+
+</div>
+
+<!-- MAIN -->
+<div class="flex-1 p-6">
+
+<h1 class="text-2xl font-bold mb-6">Chamados Resolvidos</h1>
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+
+<table class="w-full text-sm">
+
+<thead class="bg-gray-50">
+<tr>
+<th class="p-3 text-left">Título</th>
+<th>Prioridade</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="lista"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+checkAdmin();
+
+async function loadResolvidos(){
+ const res = await fetch("/chamados");
+ const lista = await res.json();
+
+ let html = "";
+
+ lista
+ .filter(c => c.status === "Resolvido")
+ .forEach(c=>{
+
+  html += `
+  <tr class="border-b hover:bg-gray-50">
+    <td class="p-3">${c.titulo}</td>
+    <td>${c.prioridade}</td>
+    <td>
+      <span class="bg-green-100 text-green-800 px-2 py-1 rounded">
+        Resolvido
+      </span>
+    </td>
+  </tr>
+  `;
+ });
+
+ document.getElementById("lista").innerHTML = html;
+}
+
+loadResolvidos();
+
+</script>
+
+</body>
+</html>
