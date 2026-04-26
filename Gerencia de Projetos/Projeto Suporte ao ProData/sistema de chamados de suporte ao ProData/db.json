@@ -1,0 +1,47 @@
+{
+  "chamados": [
+    {
+      "id": 1777163998683,
+      "autor": "admin",
+      "titulo": "Sou gamer",
+      "descricao": "Preciso de um pc",
+      "prioridade": "Alta",
+      "status": "Resolvido",
+      "mensagens": [
+        {
+          "autor": "admin",
+          "texto": "Com uma rtx 5090 por favor admin",
+          "data": "2026-04-26T00:40:09.738Z"
+        },
+        {
+          "autor": "admin@prodata.com",
+          "texto": "beleza menor, tmj",
+          "data": "2026-04-26T00:41:18.681Z"
+        },
+        {
+          "autor": "admin",
+          "texto": "fechou menior",
+          "data": "2026-04-26T00:45:48.273Z"
+        }
+      ]
+    },
+    {
+      "id": 1777164902960,
+      "autor": "admin",
+      "titulo": "Felipin",
+      "descricao": "joadawdawdawd",
+      "prioridade": "Baixa",
+      "status": "Em andamento",
+      "mensagens": []
+    },
+    {
+      "id": 1777165173630,
+      "autor": "sayurirhea@gmail.com",
+      "titulo": "asd",
+      "descricao": "asd",
+      "prioridade": "Alta",
+      "status": "Aberto",
+      "mensagens": []
+    }
+  ]
+}

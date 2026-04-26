@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="flex h-screen">
+
+<!-- SIDEBAR -->
+<div class="w-64 bg-slate-900 text-slate-300 flex flex-col p-6">
+
+<a href="dashboard.html" class="flex items-center gap-2 mb-10 cursor-pointer hover:opacity-80 transition block">
+<div class="bg-blue-600 p-2 rounded-lg">💻</div>
+<h2 class="text-lg font-semibold text-white">Suporte ProData</h2>
+</a>
+
+<nav class="flex-1 space-y-2">
+
+<a href="dashboard.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+📊 Dashboard
+</a>
+
+<a href="admin.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-600 text-white">
+🛠 Admin
+</a>
+
+</nav>
+
+<button onclick="logout()"
+class="mt-6 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg">
+Sair
+</button>
+
+</div>
+
+<!-- MAIN -->
+<div class="flex-1 p-6">
+
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Gerenciamento de Chamados</h1>
+    <div class="flex items-center gap-2">
+        <label class="font-semibold text-gray-700 text-sm">Filtrar por Status:</label>
+        <select id="filtro-status" onchange="loadAdmin()" class="p-2 border rounded-lg bg-white shadow-sm outline-none">
+            <option value="">Todos</option>
+            <option value="Aberto">Aberto</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Resolvido">Resolvido</option>
+        </select>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+
+<table class="w-full text-sm">
+
+<thead class="bg-gray-50 text-gray-600">
+<tr>
+<th class="p-3 text-left">Título</th>
+<th>Status</th>
+<th>Prioridade</th>
+<th>Ações</th>
+</tr>
+</thead>
+
+<tbody id="lista"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODAL ANALISAR CHAMADO -->
+<div id="modal-chamado" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl w-[600px] text-black max-h-[90vh] flex flex-col">
+        <div class="flex justify-between items-start mb-4">
+            <h2 class="text-xl font-bold">Detalhes do Chamado</h2>
+            <button onclick="fecharModal()" class="text-red-500 font-bold hover:opacity-80">X</button>
+        </div>
+        
+        <div class="mb-4">
+            <p class="text-sm"><strong>Título:</strong> <span id="modal-titulo"></span></p>
+            <p class="text-sm"><strong>Autor:</strong> <span id="modal-autor"></span></p>
+            <p class="text-sm"><strong>Prioridade:</strong> <span id="modal-prioridade"></span></p>
+            <p class="text-sm"><strong>Status:</strong> <span id="modal-status"></span></p>
+            <p class="text-sm mt-2"><strong>Descrição:</strong></p>
+            <div id="modal-descricao" class="bg-gray-100 p-2 rounded text-sm min-h-[50px] mb-2"></div>
+        </div>
+        
+        <div id="admin-status-div" class="mb-4 hidden">
+            <label class="block font-semibold mb-1 text-sm">Atualizar Status (Admin):</label>
+            <select id="modal-select-status" class="w-full p-2 border rounded">
+                <option value="Aberto">Aberto</option>
+                <option value="Em andamento">Em andamento</option>
+                <option value="Resolvido">Resolvido</option>
+            </select>
+        </div>
+
+        <div class="flex-1 overflow-y-auto bg-slate-50 p-3 rounded-lg mb-4 border" id="chat-mensagens" style="min-height: 150px; max-height: 250px;">
+            <!-- Mensagens -->
+        </div>
+
+        <div class="flex gap-2" id="chat-input-area">
+            <input type="text" id="chat-input" class="flex-1 p-2 border rounded text-sm" placeholder="Digite uma mensagem...">
+            <button onclick="enviarMensagem()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition font-semibold text-sm">Enviar</button>
+        </div>
+        
+        <div class="flex gap-3 mt-4 hidden" id="admin-acoes-div">
+            <button onclick="salvarStatus()" class="flex-1 bg-green-600 text-white p-2 rounded hover:bg-green-700 transition font-semibold">Salvar Status</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+
+checkAdmin();
+
+async function loadAdmin(){
+ const resUser = await fetch("/user");
+ window.usuarioAtual = await resUser.json();
+
+ const res = await fetch("/chamados");
+ const lista = await res.json();
+ window.chamadosAtuais = lista;
+
+ const filtro = document.getElementById("filtro-status").value;
+ const listaFiltrada = filtro ? lista.filter(c => c.status === filtro) : lista;
+
+ let html = "";
+
+ listaFiltrada.forEach(c=>{
+
+  let statusColor = "bg-gray-200";
+  if(c.status === "Em andamento") statusColor = "bg-yellow-100 text-yellow-800";
+  if(c.status === "Resolvido") statusColor = "bg-green-100 text-green-800";
+
+  let prioridadeColor = "bg-blue-100";
+  if(c.prioridade === "Alta") prioridadeColor = "bg-red-100 text-red-800";
+
+  html += `
+  <tr class="border-b hover:bg-gray-50">
+
+    <td class="p-3 font-medium">${c.titulo}</td>
+
+    <td>
+      <span class="px-2 py-1 rounded ${statusColor}">
+        ${c.status}
+      </span>
+    </td>
+
+    <td>
+      <span class="px-2 py-1 rounded ${prioridadeColor}">
+        ${c.prioridade}
+      </span>
+    </td>
+
+    <td class="space-x-2">
+
+      <button onclick="abrirModal(${c.id})"
+      class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+        Analisar
+      </button>
+
+      <button onclick="deletar(${c.id})"
+      class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+        Excluir
+      </button>
+
+    </td>
+
+  </tr>
+  `;
+ });
+
+ document.getElementById("lista").innerHTML = html;
+}
+
+async function setStatus(id, status){
+
+ await fetch("/status", {
+  method:"POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({id, status})
+ });
+
+ loadAdmin();
+}
+
+loadAdmin();
+
+async function deletar(id){
+
+ if(!confirm("Tem certeza que deseja excluir este chamado?")) return;
+
+ await fetch("/delete", {
+  method:"POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({id})
+ });
+
+ loadAdmin();
+}
+
+</script>
+
+</body>
+</html>
