@@ -1,3 +1,0 @@
-no terminal use
-
-node server.js
