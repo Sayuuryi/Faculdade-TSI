@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="flex h-screen">
+
+<!-- SIDEBAR -->
+<div class="w-64 bg-slate-900 text-slate-300 flex flex-col p-6">
+
+<a href="dashboard.html" class="flex items-center gap-2 mb-10 cursor-pointer hover:opacity-80 transition block">
+<div class="bg-blue-600 p-2 rounded-lg">💻</div>
+<h2 class="text-lg font-semibold text-white">Suporte ProData</h2>
+</a>
+
+<nav class="flex-1 space-y-2">
+
+<a href="dashboard.html"
+class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-600 text-white">
+📊 Dashboard
+</a>
+
+<a id="nav-admin" href="admin.html" style="display: none;"
+class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+🛠 Admin
+</a>
+
+</nav>
+
+<button onclick="logout()"
+class="mt-6 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg">
+Sair
+</button>
+
+</div>
+
+<!-- CONTENT -->
+<div class="flex-1 p-6">
+
+<div class="flex justify-between items-center mb-6">
+<h1 class="text-2xl font-bold">Dashboard</h1>
+<button onclick="abrirModalNovo()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition" id="btn-novo-chamado">➕ Novo Chamado</button>
+</div>
+
+<div class="grid grid-cols-3 gap-4 mb-6">
+
+<div class="bg-white p-5 rounded-xl shadow">
+<p>Total</p>
+<h2 id="total" class="text-2xl font-bold"></h2>
+</div>
+
+<div class="bg-yellow-100 p-5 rounded-xl shadow">
+<p>Em andamento</p>
+<h2 id="andamento" class="text-2xl font-bold"></h2>
+</div>
+
+<div class="bg-green-100 p-5 rounded-xl shadow">
+<p>Resolvidos</p>
+<h2 id="resolvido" class="text-2xl font-bold"></h2>
+</div>
+
+</div>
+
+<div class="bg-white p-5 rounded-xl shadow">
+
+<table class="w-full">
+
+<thead class="border-b">
+<tr>
+<th class="p-2 text-left">Título</th>
+<th class="text-left">Status</th>
+<th class="text-left">Prioridade</th>
+<th class="text-left" id="th-acoes"></th>
+</tr>
+</thead>
+
+<tbody id="lista"></tbody>
+
+</table>
+
+</div>
+
+</div>
+</div>
+
+<!-- MODAL ANALISAR CHAMADO -->
+<div id="modal-chamado" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl w-[600px] text-black max-h-[90vh] flex flex-col">
+        <div class="flex justify-between items-start mb-4">
+            <h2 class="text-xl font-bold">Detalhes do Chamado</h2>
+            <button onclick="fecharModal()" class="text-red-500 font-bold hover:opacity-80">X</button>
+        </div>
+        
+        <div class="mb-4">
+            <p class="text-sm"><strong>Título:</strong> <span id="modal-titulo"></span></p>
+            <p class="text-sm"><strong>Autor:</strong> <span id="modal-autor"></span></p>
+            <p class="text-sm"><strong>Prioridade:</strong> <span id="modal-prioridade"></span></p>
+            <p class="text-sm"><strong>Status:</strong> <span id="modal-status"></span></p>
+            <p class="text-sm mt-2"><strong>Descrição:</strong></p>
+            <div id="modal-descricao" class="bg-gray-100 p-2 rounded text-sm min-h-[50px] mb-2"></div>
+        </div>
+        
+        <div id="admin-status-div" class="mb-4 hidden">
+            <label class="block font-semibold mb-1 text-sm">Atualizar Status (Admin):</label>
+            <select id="modal-select-status" class="w-full p-2 border rounded">
+                <option value="Aberto">Aberto</option>
+                <option value="Em andamento">Em andamento</option>
+                <option value="Resolvido">Resolvido</option>
+            </select>
+        </div>
+
+        <div class="flex-1 overflow-y-auto bg-slate-50 p-3 rounded-lg mb-4 border" id="chat-mensagens" style="min-height: 150px; max-height: 250px;">
+            <!-- Mensagens -->
+        </div>
+
+        <div class="flex gap-2" id="chat-input-area">
+            <input type="text" id="chat-input" class="flex-1 p-2 border rounded text-sm" placeholder="Digite uma mensagem...">
+            <button onclick="enviarMensagem()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition font-semibold text-sm">Enviar</button>
+        </div>
+        
+        <div class="flex gap-3 mt-4 hidden" id="admin-acoes-div">
+            <button onclick="salvarStatus()" class="flex-1 bg-green-600 text-white p-2 rounded hover:bg-green-700 transition font-semibold">Salvar Status</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NOVO CHAMADO -->
+<div id="modal-novo-chamado" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl w-96 text-black">
+        <h2 class="text-xl font-bold mb-4">Novo Chamado</h2>
+        <div class="mb-3">
+            <label class="block text-sm font-semibold">Título</label>
+            <input id="novo-titulo" type="text" class="w-full p-2 border rounded">
+        </div>
+        <div class="mb-3">
+            <label class="block text-sm font-semibold">Descrição</label>
+            <textarea id="novo-descricao" class="w-full p-2 border rounded"></textarea>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-semibold">Prioridade</label>
+            <select id="novo-prioridade" class="w-full p-2 border rounded">
+                <option value="Baixa">Baixa</option>
+                <option value="Média">Média</option>
+                <option value="Alta">Alta</option>
+            </select>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="criarChamado()" class="flex-1 bg-blue-600 text-white p-2 rounded hover:bg-blue-700 font-semibold">Criar</button>
+            <button onclick="fecharModalNovo()" class="flex-1 bg-gray-400 text-white p-2 rounded hover:bg-gray-500 font-semibold">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>loadChamados()</script>
+</body>
+</html>
